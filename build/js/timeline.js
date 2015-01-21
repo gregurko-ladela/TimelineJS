@@ -6076,29 +6076,6 @@ if (typeof VMM.Slider != 'undefined') {
 			$wrap	= VMM.appendAndGetElement(element, "<div>", "content");
 			$slide	= VMM.appendAndGetElement($wrap, "<div>");
 			
-			/* DATE
-			================================================== */
-			if (data.startdate != null && data.startdate != "") {
-				if (type.of(data.startdate) == "date") {
-					if (data.type != "start") {
-						var st	= VMM.Date.prettyDate(data.startdate, false, data.precisiondate);
-						var en	= VMM.Date.prettyDate(data.enddate, false, data.precisiondate);
-						var tag	= "";
-						/* TAG / CATEGORY
-						================================================== */
-						if (data.tag != null && data.tag != "") {
-							tag		= VMM.createElement("span", data.tag, "slide-tag");
-						}
-						
-						if (st != en) {
-							c.text += VMM.createElement("h2", st + " &mdash; " + en + tag, "date");
-						} else {
-							c.text += VMM.createElement("h2", st + tag, "date");
-						}
-					}
-				}
-			}
-			
 			/* HEADLINE
 			================================================== */
 			if (data.headline != null && data.headline != "") {
@@ -6109,6 +6086,36 @@ if (typeof VMM.Slider != 'undefined') {
 					c.text		+=	VMM.createElement("h3", VMM.Util.linkify_with_twitter(data.headline, "_blank"));
 				}
 			}
+
+            var date_div = '';
+            /* DATE
+             ================================================== */
+            if (data.startdate != null && data.startdate != "") {
+                if (type.of(data.startdate) == "date") {
+                    if (data.type != "start") {
+                        var st	= VMM.Date.prettyDate(data.startdate, false, data.precisiondate);
+                        var en	= VMM.Date.prettyDate(data.enddate, false, data.precisiondate);
+                        var tag	= "";
+                        /* TAG / CATEGORY
+                         ================================================== */
+                        if (data.tag != null && data.tag != "") {
+                            tag		= VMM.createElement("span", data.tag, "slide-tag");
+                        }
+
+                        if (st != en) {
+                            date_div += VMM.createElement("h2", st + " &mdash; " + en + tag, "date");
+                        } else {
+                            date_div += VMM.createElement("h2", st + tag, "date");
+                        }
+                    }
+                }
+            }
+
+            if (data.status){
+                date_div += VMM.createElement("spam", data.status, "roadmap-blue-label");
+            }
+
+            c.text += VMM.createElement("div", date_div, "date-under-name");
 			
 			/* TEXT
 			================================================== */
@@ -7546,6 +7553,7 @@ if(typeof VMM != 'undefined' && typeof VMM.Timeline == 'undefined') {
 						_date.slug				= data.date[i].slug;
 						_date.uniqueid			= VMM.Util.unique_ID(7);
 						_date.classname			= data.date[i].classname;
+						_date.status			= data.date[i].status;
 						_date.labelcolor	    = typeof data.date[i].labelcolor === 'undefined' ? 'white' : data.date[i].labelcolor;
 						
 						_dates.push(_date);
