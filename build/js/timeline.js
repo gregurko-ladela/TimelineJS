@@ -5543,7 +5543,7 @@ if(typeof VMM != 'undefined' && typeof VMM.Slider == 'undefined') {
 				
 			} else {
 				
-				VMM.Lib.css(".slider-item .layout-text-media .text", "width", "40%" );
+				VMM.Lib.css(".slider-item .layout-text-media .text", "width", "50%" );
 				VMM.Lib.css(".slider-item .layout-text-media .text", "display", "table-cell" );
 				VMM.Lib.css(".slider-item .layout-text-media .text .container", "display", "table-cell" );
 				VMM.Lib.css(".slider-item .layout-text-media .text .container", "width", "auto" );
