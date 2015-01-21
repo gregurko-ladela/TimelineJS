@@ -7166,9 +7166,9 @@ if(typeof VMM != 'undefined' && typeof VMM.Timeline == 'undefined') {
 			VMM.Lib.addClass($timeline, "vco-storyjs");
 			
 			$container	= VMM.appendAndGetElement($timeline, "<div>", "vco-container vco-main");
-			$feature	= VMM.appendAndGetElement($container, "<div>", "vco-feature");
-			$slider		= VMM.appendAndGetElement($feature, "<div>", "vco-slider");
 			$navigation	= VMM.appendAndGetElement($container, "<div>", "vco-navigation");
+            $feature	= VMM.appendAndGetElement($container, "<div>", "vco-feature");
+            $slider		= VMM.appendAndGetElement($feature, "<div>", "vco-slider");
 			$feedback	= VMM.appendAndGetElement($timeline, "<div>", "vco-feedback", "");
 			
 			
@@ -7537,6 +7537,7 @@ if(typeof VMM != 'undefined' && typeof VMM.Timeline == 'undefined') {
 						_date.headline			= data.date[i].headline;
 						_date.type				= data.date[i].type;
 						_date.date				= VMM.Date.prettyDate(_date.startdate, false, _date.precisiondate);
+						_date.end_date			= VMM.Date.prettyDate(_date.enddate, false, _date.precisiondate);
 						_date.asset				= data.date[i].asset;
 						_date.fulldate			= _date.startdate.getTime();
 						_date.text				= data.date[i].text;
@@ -7545,7 +7546,7 @@ if(typeof VMM != 'undefined' && typeof VMM.Timeline == 'undefined') {
 						_date.slug				= data.date[i].slug;
 						_date.uniqueid			= VMM.Util.unique_ID(7);
 						_date.classname			= data.date[i].classname;
-						
+						_date.labelcolor	    = typeof data.date[i].labelcolor === 'undefined' ? 'white' : data.date[i].labelcolor;
 						
 						_dates.push(_date);
 					} 
@@ -8421,6 +8422,7 @@ if(typeof VMM.Timeline != 'undefined' && typeof VMM.Timeline.TimeNav == 'undefin
 						VMM.Lib.animate(marker.lineevent, config.duration/2, config.ease, {"width": line});
 					} else {
 						VMM.Lib.css(marker.lineevent, "width", line);
+						VMM.Lib.css(marker.content, "width", line - 13);
 					}
 				}
 				
@@ -9120,6 +9122,11 @@ if(typeof VMM.Timeline != 'undefined' && typeof VMM.Timeline.TimeNav == 'undefin
 				} else {
 					VMM.appendElement(_marker_content, "<div style='margin-right:7px;height:50px;width:2px;float:left;'></div>");
 				}
+
+                _marker_content.css({
+                    'background' : data[i].labelcolor,
+                    'text-align' : 'center'
+                });
 				
 				// ADD DATE AND TITLE
 				if (data[i].title == "" || data[i].title == " " ) {
@@ -9146,7 +9153,9 @@ if(typeof VMM.Timeline != 'undefined' && typeof VMM.Timeline.TimeNav == 'undefin
 				}
 				
 				if (has_title) {
+//                    alert(data[i].date + ' - ' + data[i].end_date);
 					VMM.appendElement(_marker_content, "<h3>" + _marker_title + "</h3>");
+					VMM.appendElement(_marker_content, "<span style='font-size: 7px;'>" + ((data[i].date)? data[i].date : '') + ((data[i].date && data[i].end_date)? ' - ' : '') + ((data[i].end_date)? data[i].end_date : '') + "</span>");
 				} else {
 					VMM.appendElement(_marker_content, "<h3>" + _marker_title + "</h3>");
 					VMM.appendElement(_marker_content, "<h3 id='marker_content_" + data[i].uniqueid + "'>" + _marker_title + "</h3>");
@@ -9163,13 +9172,13 @@ if(typeof VMM.Timeline != 'undefined' && typeof VMM.Timeline.TimeNav == 'undefin
 					marker: 			_marker,
 					flag: 				_marker_flag,
 					lineevent: 			_marker_line_event,
+                    content: 			_marker_content,
 					type: 				"marker",
 					full:				true,
 					relative_pos:		_marker_relative_pos,
 					tag:				data[i].tag,
 					pos_left:			0
 				};
-				
 				
 				if (data[i].type == "start") {
 					trace("BUILD MARKER HAS START PAGE");
