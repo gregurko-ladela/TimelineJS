@@ -4492,6 +4492,12 @@ if(typeof VMM != 'undefined' && typeof VMM.MediaElement == 'undefined') {
 				}
 			} 
 		},
+
+        decodeHtml: function decodeHtml(html) {
+            var txt = document.createElement("textarea");
+            txt.innerHTML = html;
+            return txt.value;
+        },
 		
 		create: function(data, uid) {
 			var _valid = false,
@@ -4587,7 +4593,7 @@ if(typeof VMM != 'undefined' && typeof VMM.MediaElement == 'undefined') {
 				} else if (m.type		==	"unknown") { 
 					trace("NO KNOWN MEDIA TYPE FOUND TRYING TO JUST PLACE THE HTML"); 
 					isTextMedia			=	true;
-					mediaElem			=	"<div class='plain-text'><div class='container'>" + VMM.Util.properQuotes(m.id) + "</div></div>";
+					mediaElem			=	"<div class='plain-text'><div class='container'>" + this.decodeHtml(VMM.Util.properQuotes(m.id)) + "</div></div>";
 			// WEBSITE
 				} else if (m.type		==	"website") { 
 					
@@ -5546,14 +5552,15 @@ if(typeof VMM != 'undefined' && typeof VMM.Slider == 'undefined') {
 				VMM.Lib.css(".slider-item .layout-text-media .text", "width", "50%" );
 				VMM.Lib.css(".slider-item .layout-text-media .text", "display", "table-cell" );
 				VMM.Lib.css(".slider-item .layout-text-media .text .container", "display", "table-cell" );
-				VMM.Lib.css(".slider-item .layout-text-media .text .container", "width", "auto" );
+//				VMM.Lib.css(".slider-item .layout-text-media .text .container", "width", "auto" );
 				VMM.Lib.css(".slider-item .layout-text-media .text .container .start", "width", mediasize.text_media.text.width );
 				//VMM.Lib.addClass(".slider-item .content-container", "pad-left");
 				VMM.Lib.removeClass(".slider-item .content-container", "pad-top");
 				
 				VMM.Lib.css(".slider-item .layout-text-media .media", "float", "left" );
 				VMM.Lib.css(".slider-item .layout-text-media", "display", "table" );
-				
+				VMM.Lib.css(".slider-item .layout-text-media .media .text-media", "min-height", "200px" );
+
 				VMM.Lib.css(".slider-item .media blockquote p", "line-height", "36px" );
 				VMM.Lib.css(".slider-item .media blockquote p", "font-size", "28px" );
 				
@@ -6070,6 +6077,12 @@ if (typeof VMM.Slider != 'undefined') {
 				VMM.Lib.append($slide, $media);
 			}
 		}
+
+        var decodeHtml = function decodeHtml(html) {
+            var txt = document.createElement("textarea");
+            txt.innerHTML = html;
+            return txt.value;
+        };
 		
 		var buildSlide = function() {
 			trace("BUILDSLIDE");
@@ -6125,7 +6138,7 @@ if (typeof VMM.Slider != 'undefined') {
 			}
 			
 			if (c.has.text || c.has.headline) {
-				c.text		= VMM.createElement("div", c.text, "container");
+				c.text		= VMM.createElement("div", decodeHtml(c.text), "container");
 				//$text		=	VMM.appendAndGetElement($slide, "<div>", "text", c.text);
 				
 				$text		= VMM.appendAndGetElement($slide, "<div>", "text", VMM.TextElement.create(c.text));
