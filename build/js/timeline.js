@@ -8444,6 +8444,7 @@ if(typeof VMM.Timeline != 'undefined' && typeof VMM.Timeline.TimeNav == 'undefin
 					} else {
 						VMM.Lib.css(marker.lineevent, "width", line);
 						VMM.Lib.css(marker.content, "width", line - 13);
+						VMM.Lib.css(marker.content, "min-width", line - 13);
 					}
 				}
 				
