@@ -30,7 +30,7 @@
 					}
 				}
 				.marker:hover {
-					.line {
+					.line, .line-right {
 						z-index:24;
 						background:@color-nav-title;
 					}
@@ -272,6 +272,11 @@
 							.opacity(75	);
 						}
 					}
+                    .line-right {
+                      z-index:199;
+                      background: @color-theme;
+                      width:1px;
+                    }
 					.flag, .flag-small {
 						z-index:200;
 						.flag-content {
@@ -304,7 +309,7 @@
 								margin-top:4px;
 							}
 						}
-						
+
 					}
 				}
 				.marker {
@@ -345,6 +350,19 @@
 							.opacity(15);
 						}
 					}
+                    .line-right {
+                      position:absolute;
+                      top: 0px;
+                      right: (@navigation-marker-height/2);
+                      width:1px;
+                      height:150px;
+                      background-color: @color-line;
+                      background-color: fade(@color-line, 50%);
+
+                      .box-shadow(1px 0 0 fade(@color-base, 50%));
+
+                      z-index:22;
+                    }
 					.flag, .flag-small {
 						position:absolute;
 						top: 15px;

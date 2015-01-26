@@ -5418,11 +5418,15 @@ if(typeof VMM != 'undefined' && typeof VMM.Slider == 'undefined') {
 			
 			VMM.attachElement($slides_items, "");
 			slides = [];
-			
+
 			for(i = 0; i < d.length; i++) {
 				var _slide = new VMM.Slider.Slide(d[i], $slides_items);
 				//_slide.show();
 				slides.push(_slide);
+
+                if (d[i].type === 'start') {
+                    config.current_slide = i;
+                }
 			}
 		}
 		
@@ -7553,7 +7557,7 @@ if(typeof VMM != 'undefined' && typeof VMM.Timeline == 'undefined') {
 							}
 						}
 						
-						_date.title				= data.date[i].headline;
+						_date.title				= data.date[i].labelText;
 						_date.headline			= data.date[i].headline;
 						_date.type				= data.date[i].type;
 						_date.date				= VMM.Date.prettyDate(_date.startdate, false, _date.precisiondate);
@@ -7567,7 +7571,7 @@ if(typeof VMM != 'undefined' && typeof VMM.Timeline == 'undefined') {
 						_date.uniqueid			= VMM.Util.unique_ID(7);
 						_date.classname			= data.date[i].classname;
 						_date.status			= data.date[i].status;
-						_date.labelcolor	    = typeof data.date[i].labelcolor === 'undefined' ? 'white' : data.date[i].labelcolor;
+						_date.label_color	    = typeof data.date[i].labelColor === 'undefined' ? 'white' : data.date[i].labelColor;
 						
 						_dates.push(_date);
 					} 
@@ -7602,8 +7606,8 @@ if(typeof VMM != 'undefined' && typeof VMM.Timeline == 'undefined') {
 				}
 				trace("HAS STARTPAGE");
 				trace(startpage_date);
-				
-				if (startpage_date && startpage_date < _dates[0].startdate) {
+
+				if (true || startpage_date && startpage_date < _dates[0].startdate) {
 					_date.startdate = new Date(startpage_date);
 				} else {
 					td = _dates[0].startdate;
@@ -7626,7 +7630,7 @@ if(typeof VMM != 'undefined' && typeof VMM.Timeline == 'undefined') {
 						_date.startdate.setMinutes(td.getMinutes() - 1);
 					}
 				}
-				
+
 				_date.uniqueid		= VMM.Util.unique_ID(7);
 				_date.enddate		= _date.startdate;
 				_date.precisiondate	= do_start.precision;
@@ -8441,10 +8445,15 @@ if(typeof VMM.Timeline != 'undefined' && typeof VMM.Timeline.TimeNav == 'undefin
 					VMM.Lib.css(marker.lineevent, "top", line_last_height_pos);
 					if (is_animated) {
 						VMM.Lib.animate(marker.lineevent, config.duration/2, config.ease, {"width": line});
+                        VMM.Lib.animate(marker.content, config.duration/2, config.ease, {"width": line - 13});
+                        VMM.Lib.css(marker.content, "min-width", line - 13);
 					} else {
 						VMM.Lib.css(marker.lineevent, "width", line);
 						VMM.Lib.css(marker.content, "width", line - 13);
 						VMM.Lib.css(marker.content, "min-width", line - 13);
+                        if (marker.line_right){
+						    VMM.Lib.css(marker.line_right, "left", line + 3);
+                        }
 					}
 				}
 				
@@ -9134,10 +9143,15 @@ if(typeof VMM.Timeline != 'undefined' && typeof VMM.Timeline.TimeNav == 'undefin
 				_marker_content			= VMM.appendAndGetElement(_marker_flag, "<div>", "flag-content");
 				_marker_dot				= VMM.appendAndGetElement(_marker, "<div>", "dot");
 				_marker_line			= VMM.appendAndGetElement(_marker, "<div>", "line");
+                if (data[i].type !== 'start' && data[i].date !== data[i].end_date){
+				    _marker_line_rigth      = VMM.appendAndGetElement(_marker, "<div>", "line-right");
+                }else{
+                    _marker_line_rigth = null;
+                }
 				_marker_line_event		= VMM.appendAndGetElement(_marker_line, "<div>", "event-line");
 				_marker_relative_pos	= positionRelative(interval, data[i].startdate, data[i].enddate);
 				_marker_thumb			= "";
-				
+
 				// THUMBNAIL
 				if (data[i].asset != null && data[i].asset != "") {
 //					VMM.appendElement(_marker_content, VMM.MediaElement.thumbnail(data[i].asset, 24, 24, data[i].uniqueid));
@@ -9146,7 +9160,7 @@ if(typeof VMM.Timeline != 'undefined' && typeof VMM.Timeline.TimeNav == 'undefin
 				}
 
                 _marker_content.css({
-                    'background' : data[i].labelcolor,
+                    'background' : data[i].label_color,
                     'text-align' : 'center'
                 });
 				
@@ -9195,6 +9209,7 @@ if(typeof VMM.Timeline != 'undefined' && typeof VMM.Timeline.TimeNav == 'undefin
 					flag: 				_marker_flag,
 					lineevent: 			_marker_line_event,
                     content: 			_marker_content,
+                    line_right: 		_marker_line_rigth,
 					type: 				"marker",
 					full:				true,
 					relative_pos:		_marker_relative_pos,
@@ -9849,7 +9864,7 @@ if (typeof VMM.Timeline !== 'undefined' && typeof VMM.Timeline.DataObj == 'undef
 					VMM.fireEvent(global, VMM.Timeline.Config.events.messege, "Parsing Data");
 					var _data_obj = VMM.Timeline.DataObj.data_template_obj;
 					
-					_data_obj.timeline.startDate	= 	new Date(d.content.date.created);;
+					_data_obj.timeline.startDate	= 	new Date(d.content.date.created);
 					_data_obj.timeline.headline		= 	d.content.title;
 					
 					trace(d);
