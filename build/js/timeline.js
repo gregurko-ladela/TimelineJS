@@ -8447,6 +8447,9 @@ if(typeof VMM.Timeline != 'undefined' && typeof VMM.Timeline.TimeNav == 'undefin
 						VMM.Lib.animate(marker.lineevent, config.duration/2, config.ease, {"width": line});
                         VMM.Lib.animate(marker.content, config.duration/2, config.ease, {"width": line - 13});
                         VMM.Lib.css(marker.content, "min-width", line - 13);
+                        if (marker.line_right){
+                            VMM.Lib.css(marker.line_right, "left", line + 3);
+                        }
 					} else {
 						VMM.Lib.css(marker.lineevent, "width", line);
 						VMM.Lib.css(marker.content, "width", line - 13);
