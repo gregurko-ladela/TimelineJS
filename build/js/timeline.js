@@ -7572,7 +7572,9 @@ if(typeof VMM != 'undefined' && typeof VMM.Timeline == 'undefined') {
 						_date.classname			= data.date[i].classname;
 						_date.status			= data.date[i].status;
 						_date.label_color	    = typeof data.date[i].labelColor === 'undefined' ? 'white' : data.date[i].labelColor;
-						
+						_date.decision_id	    = data.date[i].decisionId;
+						_date.linked_to	        = data.date[i].linkedTo;
+
 						_dates.push(_date);
 					} 
 					
@@ -8957,6 +8959,7 @@ if(typeof VMM.Timeline != 'undefined' && typeof VMM.Timeline.TimeNav == 'undefin
 			calculateMultiplier();
 			positionMarkers(false);
 			positionEras();
+            drawLinks();
 			
 			positionInterval($timeinterval, interval_array, false, true);
 			positionInterval($timeintervalmajor, interval_major_array);
@@ -9217,7 +9220,9 @@ if(typeof VMM.Timeline != 'undefined' && typeof VMM.Timeline.TimeNav == 'undefin
 					full:				true,
 					relative_pos:		_marker_relative_pos,
 					tag:				data[i].tag,
-					pos_left:			0
+					pos_left:			0,
+                    decision_id:        data[i].decision_id,
+                    linked_to:          data[i].linked_to
 				};
 				
 				if (data[i].type == "start") {
@@ -9272,6 +9277,75 @@ if(typeof VMM.Timeline != 'undefined' && typeof VMM.Timeline.TimeNav == 'undefin
 
 			
 		}
+
+        function drawLinks() {
+            var marker, linked_to_marker, from_center, to_center, link_left, link_width, from_top, to_top, link_top, link_height, link_border_left, link_border_right;
+
+            for(var i = 0; i < markers.length; i++) {
+                marker = markers[i];
+
+                if (marker.type === 'marker' && typeof marker.linked_to === 'object' && marker.linked_to.length){
+                    for(var j = 0; j < marker.linked_to.length; j++) {
+                        linked_to_marker = findMarkerByDecisionId(marker.linked_to[j]);
+                        if (linked_to_marker) {
+
+                            from_center = parseInt(marker.marker.css('left'), 10) + parseInt(marker.flag.css('left'), 10) + marker.content.outerWidth() / 2;
+                            to_center   = parseInt(linked_to_marker.marker.css('left'), 10) + parseInt(linked_to_marker.flag.css('left'), 10) + linked_to_marker.content.outerWidth() / 2;
+                            from_top    = parseInt(marker.flag.css('top'), 10) + parseInt(marker.content.css('height'), 10) / 2;
+                            to_top      = parseInt(linked_to_marker.flag.css('top'), 10) + parseInt(linked_to_marker.content.css('height'), 10) / 2;
+
+                            if (from_center < to_center){
+                                link_left = from_center;
+                                link_width = to_center - from_center;
+                            }else{
+                                link_left = to_center;
+                                link_width = from_center - to_center;
+                            }
+
+                            if (from_top < to_top) {
+                                link_top = from_top;
+                                link_height = to_top - from_top;
+                            } else {
+                                link_top = to_top;
+                                link_height = from_top - to_top;
+                            }
+
+                            if ( (from_top < to_top && from_center < to_center) || (from_top > to_top && from_center > to_center) ){
+                                link_border_left = '2px solid black';
+                                link_border_right = '';
+                            }else{
+                                link_border_left = '';
+                                link_border_right = '2px solid black';
+                            }
+
+                            // LINK
+                            VMM.appendAndGetElement($content, "<div>", "marker-link")
+                                .css({
+                                    height: link_height + 'px',
+                                    left: link_left + 'px',
+                                    position: 'absolute',
+                                    top: link_top + 'px',
+                                    width: link_width + 'px',
+                                    'z-index': 22,
+                                    'border-bottom': '2px solid black',
+                                    'border-left': link_border_left,
+                                    'border-right': link_border_right
+                                });
+                        }
+                    }
+                }
+            }
+        }
+
+        function findMarkerByDecisionId(decision_id) {
+            for(var i = 0; i < markers.length; i++) {
+                if (markers[i].type === 'marker' && markers[i].decision_id == decision_id){
+                    return markers[i];
+                }
+            }
+
+            return null;
+        }
 		
 		function buildEras() {
 			var number_of_colors	= 6,
