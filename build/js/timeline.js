@@ -7986,6 +7986,8 @@ if(typeof VMM.Timeline != 'undefined' && typeof VMM.Timeline.TimeNav == 'undefin
 			config.nav.constraint.left = (config.width/2);
 			config.nav.constraint.right = config.nav.constraint.right_min - (config.width/2);
 			$dragslide.updateConstraint(config.nav.constraint);
+
+            setTimeout(drawLinks, config.duration * 0.75);
 		};
 		
 		/* MARKER EVENTS
@@ -9280,6 +9282,8 @@ if(typeof VMM.Timeline != 'undefined' && typeof VMM.Timeline.TimeNav == 'undefin
 
         function drawLinks() {
             var marker, linked_to_marker, from_center, to_center, link_left, link_width, from_top, to_top, link_top, link_height, link_border_left, link_border_right;
+
+            $('div.marker-link').remove();
 
             for(var i = 0; i < markers.length; i++) {
                 marker = markers[i];
